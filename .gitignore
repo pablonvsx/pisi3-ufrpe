@@ -1,0 +1,38 @@
+# --- Sistema operacional ---
+.DS_Store
+Thumbs.db
+
+# --- IDEs / Editor ---
+.vscode/
+.idea/
+
+# --- Python cache ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Ambientes virtuais ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Build / empacotamento ---
+build/
+dist/
+*.egg-info/
+
+# --- Logs ---
+*.log
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Arquivos locais de ambiente ---
+.env
+.env.*

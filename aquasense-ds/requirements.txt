@@ -1,0 +1,44 @@
+# ============================================================
+# AquaSense — requirements.txt
+# Disciplina: PISI 3 | UFRPE
+# ============================================================
+# Instalação: pip install -r requirements.txt
+# ============================================================
+
+
+# ── Manipulação de Dados ─────────────────────────────────────
+pandas
+numpy
+scipy
+
+
+# ── Visualização ─────────────────────────────────────────────
+matplotlib
+seaborn
+plotly                  # gráficos interativos no Streamlit
+
+
+# ── Machine Learning ─────────────────────────────────────────
+scikit-learn
+xgboost
+lightgbm
+imbalanced-learn        # SMOTE para balanceamento de classes
+
+
+# ── Explicabilidade ──────────────────────────────────────────
+shap
+
+
+# ── Dashboard ────────────────────────────────────────────────
+streamlit
+
+
+# ── API (integração com o app mobile) ────────────────────────
+fastapi
+uvicorn                 # servidor ASGI para rodar o FastAPI
+
+
+# ── Jupyter ──────────────────────────────────────────────────
+jupyterlab
+ipykernel
+nbformat               # leitura/escrita de notebooks .ipynb
