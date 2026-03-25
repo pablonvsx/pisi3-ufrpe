@@ -7,38 +7,36 @@
 
 
 # ── Manipulação de Dados ─────────────────────────────────────
-pandas
-numpy
-scipy
+pandas==3.0.1
+numpy==2.4.3
+scipy==1.17.1
 
 
 # ── Visualização ─────────────────────────────────────────────
-matplotlib
-seaborn
-plotly                  # gráficos interativos no Streamlit
+plotly==6.6.0           # gráficos interativos no Dash
 
 
 # ── Machine Learning ─────────────────────────────────────────
-scikit-learn
-xgboost
-lightgbm
-imbalanced-learn        # SMOTE para balanceamento de classes
+scikit-learn==1.8.0
+xgboost==3.2.0
+lightgbm==4.6.0
+imbalanced-learn==0.14.1        # SMOTE para balanceamento de classes
 
 
 # ── Explicabilidade ──────────────────────────────────────────
-shap
+shap==0.51.0
 
 
 # ── Dashboard ────────────────────────────────────────────────
-streamlit
+dash==4.1.0
 
 
 # ── API (integração com o app mobile) ────────────────────────
-fastapi
-uvicorn                 # servidor ASGI para rodar o FastAPI
+fastapi==0.135.2
+uvicorn==0.42.0                 # servidor ASGI para rodar o FastAPI
 
 
 # ── Jupyter ──────────────────────────────────────────────────
-jupyterlab
-ipykernel
-nbformat               # leitura/escrita de notebooks .ipynb
+jupyterlab==4.5.6
+ipykernel==7.2.0
+nbformat==5.10.4               # leitura/escrita de notebooks .ipynb
