@@ -9,7 +9,7 @@ cd aquasense-ds
 ### 2) Criar ambiente virtual
 
 ```bash
-python3 -m venv .venv
+python -m venv .venv
 ```
 
 ### 3) Ativar ambiente virtual
