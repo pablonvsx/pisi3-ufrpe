@@ -39,7 +39,3 @@ dist/
 # --- Arquivos locais de ambiente ---
 .env
 .env.*
-
-# --- Dataset ---
-aquasense-ds/dataset/
-*.csv

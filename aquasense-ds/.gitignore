@@ -1,4 +1,15 @@
-# Python
+# --- Sistema operacional ---
+.DS_Store
+Thumbs.db
+
+# --- IDEs / Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- Python cache ---
 __pycache__/
 *.py[cod]
 *$py.class
@@ -20,23 +31,36 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
+# --- Ambientes virtuais ---
 .venv/
 venv/
-ENV/
 env/
+ENV/
+*.venv-lockgen
+*.venv-lockgen-1
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# --- Build / empacotamento ---
+build/
+dist/
+*.egg-info/
 
-# Jupyter Notebook
+# --- Logs ---
+*.log
+
+# --- Jupyter ---
 .ipynb_checkpoints/
 
-# Dataset (too large to commit)
+# --- Arquivos locais de ambiente ---
+.env
+.env.*
+
+# --- Datasets (muito grandes para commitar) ---
 dataset/*.csv
 dataset/*.xlsx
 dataset/*.parquet
+
+# --- Modelos treinados ---
+models/*.pkl
+models/*.h5
+models/*.pt
+models/*.joblib
