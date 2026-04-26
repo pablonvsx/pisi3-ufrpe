@@ -21,6 +21,9 @@ __pycache__/
 venv/
 env/
 ENV/
+*.venv-lockgen
+*.venv-lockgen-1
+
 
 # --- Build / empacotamento ---
 build/
