@@ -1,9 +1,3 @@
-# Relatório Técnico de Experimentos: Regressão Logística como Baseline Linear
-**Projeto:** AquaSense — Monitoramento Inteligente da Qualidade Hídrica de Pernambuco
-**Pesquisador:** Petterson Dhiogo de Melo Neves
-**Programa:** Programa de Pós-Graduação em Geografia (PPGEO/UFPE) / Grupo de Pesquisa PAISAGEO
-**Data:** Maio de 2026
-
 ---
 
 ## 1. Introdução e Contexto Metodológico
@@ -98,4 +92,3 @@ A exaustão da trilha de Regressão Logística cumpre um papel epistemológico f
 
 1. **A Resolução do Impasse Linear:** O Experimento 7 demonstrou que a redução da granularidade do problema para 3 classes oferece o melhor balanço operacional para o modelo paramétrico, controlando de forma expressiva o volume de falsos alarmes (ganho de precisão de 15% para 31%).
 2. **Confirmação Científica de Limites:** Embora o cenário de 3 classes tenha otimizado a Regressão Logística, o teto de desempenho geral reafirma que as interações biogeoquímicas que determinam a qualidade da água são intrinsecamente não-lineares.
-3. **Recomendação de Próximos Passos:** Com a validação das pipelines de dados e das duas configurações de destino (4 e 3 classes), o foco absoluto da pesquisa deve migrar para os algoritmos de árvore (**Random Forest** e **LightGBM**). Estes modelos devem ser submetidos aos mesmos arranjos de atributos e balanceamentos validados aqui, utilizando a estrutura simplificada de 3 classes para maximizar a precisão cirúrgica e aproximar o classificador inteligente das condições reais de implantação em Pernambuco.
