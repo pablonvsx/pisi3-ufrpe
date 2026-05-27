@@ -1,0 +1,198 @@
+/* ============================================================
+   AquaSense — Dropdown Fix Global
+   dropdown-fix.css
+   Coloque na pasta assets/ junto com os outros CSS.
+   Corrige a visibilidade dos dcc.Dropdown em toda a aplicação.
+   ============================================================ */
+
+/* ── Força o fundo escuro em TODOS os dropdowns da app ── */
+
+/* Wrapper geral */
+.Select,
+.Select--single,
+.Select--multi {
+  color: #f4fffe !important;
+}
+
+/* A caixa visível do dropdown */
+.Select-control {
+  background-color: rgba(0, 50, 46, 0.9) !important;
+  border: 1px solid rgba(63, 255, 231, 0.3) !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  min-height: 40px !important;
+}
+
+.Select-control:hover {
+  border-color: rgba(63, 255, 231, 0.55) !important;
+  background-color: rgba(0, 60, 55, 0.95) !important;
+}
+
+/* Texto do valor selecionado */
+.Select-value {
+  color: #f4fffe !important;
+  padding-left: 12px !important;
+}
+
+.Select-value-label {
+  color: #f4fffe !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+/* Placeholder */
+.Select-placeholder {
+  color: rgba(212, 245, 241, 0.4) !important;
+  font-size: 13px !important;
+  padding-left: 12px !important;
+}
+
+/* Input de busca dentro do controle */
+.Select-input > input {
+  color: #f4fffe !important;
+  background: transparent !important;
+  font-size: 13px !important;
+}
+
+/* Seta indicadora */
+.Select-arrow {
+  border-top-color: rgba(63, 255, 231, 0.7) !important;
+  border-width: 5px 4px 0 !important;
+}
+
+.is-open .Select-arrow {
+  border-bottom-color: rgba(63, 255, 231, 0.7) !important;
+  border-top-color: transparent !important;
+}
+
+.Select-arrow-zone:hover .Select-arrow {
+  border-top-color: #3fffe7 !important;
+}
+
+/* Zona do clear button */
+.Select-clear-zone {
+  color: rgba(63, 255, 231, 0.5) !important;
+}
+
+.Select-clear-zone:hover {
+  color: #3fffe7 !important;
+}
+
+/* ── Menu dropdown aberto ── */
+.Select-menu-outer {
+  background-color: #011e1b !important;
+  border: 1px solid rgba(63, 255, 231, 0.3) !important;
+  border-top: 1px solid rgba(63, 255, 231, 0.12) !important;
+  border-radius: 0 0 10px 10px !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6) !important;
+  z-index: 9999 !important;
+  overflow: hidden !important;
+}
+
+.Select-menu {
+  background: transparent !important;
+  max-height: 260px !important;
+}
+
+.Select-menu::-webkit-scrollbar { width: 4px; }
+.Select-menu::-webkit-scrollbar-track { background: transparent; }
+.Select-menu::-webkit-scrollbar-thumb {
+  background: rgba(63, 255, 231, 0.25);
+  border-radius: 4px;
+}
+
+/* Cada opção do menu */
+.Select-option {
+  background-color: transparent !important;
+  color: rgba(212, 245, 241, 0.8) !important;
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+  cursor: pointer !important;
+  border-bottom: 1px solid rgba(63, 255, 231, 0.04) !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+
+.Select-option:last-child {
+  border-bottom: none !important;
+}
+
+.Select-option.is-focused {
+  background-color: rgba(63, 255, 231, 0.1) !important;
+  color: #3fffe7 !important;
+}
+
+.Select-option.is-selected {
+  background-color: rgba(63, 255, 231, 0.15) !important;
+  color: #3fffe7 !important;
+  font-weight: 600 !important;
+}
+
+.Select-option.is-focused.is-selected {
+  background-color: rgba(63, 255, 231, 0.2) !important;
+  color: #3fffe7 !important;
+}
+
+.Select-option.is-disabled {
+  color: rgba(212, 245, 241, 0.25) !important;
+  cursor: not-allowed !important;
+}
+
+/* ── Opções virtualizadas (Dash usa VirtualizedSelect internamente) ── */
+.VirtualizedSelectOption {
+  background-color: transparent !important;
+  color: rgba(42, 131, 121, 0.8) !important;
+  font-size: 13px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 14px !important;
+  cursor: pointer !important;
+}
+
+.VirtualizedSelectFocusedOption {
+  background-color: rgba(63, 255, 231, 0.1) !important;
+  color: #3fffe7 !important;
+}
+
+.VirtualizedSelectSelectedOption {
+  background-color: rgba(63, 255, 231, 0.15) !important;
+  color: #3fffe7 !important;
+  font-weight: 600 !important;
+}
+
+.VirtualizedSelectDisabledOption {
+  color: rgba(212, 245, 241, 0.25) !important;
+}
+
+/* ── Estado aberto: borda inferior da caixa ── */
+.Select.is-open .Select-control {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-color: rgba(63, 255, 231, 0.5) !important;
+  border-bottom-color: transparent !important;
+}
+
+/* ── Estado focused ── */
+.Select.is-focused .Select-control,
+.Select.is-focused:not(.is-open) .Select-control {
+  border-color: rgba(63, 255, 231, 0.5) !important;
+  box-shadow: 0 0 0 2px rgba(63, 255, 231, 0.08) !important;
+}
+
+/* ── Multi-select tags ── */
+.Select--multi .Select-value {
+  background-color: rgba(63, 255, 231, 0.15) !important;
+  border: 1px solid rgba(63, 255, 231, 0.3) !important;
+  border-radius: 4px !important;
+  color: #3fffe7 !important;
+}
+
+.Select--multi .Select-value-icon {
+  border-right: 1px solid rgba(63, 255, 231, 0.2) !important;
+  color: rgba(63, 255, 231, 0.6) !important;
+}
+
+.Select--multi .Select-value-icon:hover {
+  background-color: rgba(63, 255, 231, 0.1) !important;
+  color: #3fffe7 !important;
+}
