@@ -1,4 +1,4 @@
----
+# Relatório Técnico de Experimentos: Regressão Logística como Baseline Linear
 
 ## 1. Introdução e Contexto Metodológico
 
@@ -9,6 +9,14 @@ A pesquisa foi dividida em duas grandes fases de modelagem:
 2.  **Fase de 3 Classes:** Onde o problema foi simplificado por meio da fusão das categorias de maior risco ambiental, resultando em três classes (*Excelente*, *Boa* e *Atenção/Crítica*).
 
 A distribuição natural dos dados hídricos coletados apresenta um desbalanceamento severo, com dominância massiva da categoria de águas limpas. Modelar esse cenário impõe desafios complexos: algoritmos tradicionais tendem a maximizar a acurácia global negligenciando as classes minoritárias, gerando modelos estatisticamente aceitáveis, mas ecologicamente perigosos (incapazes de detectar contaminações graves). A trilha foi estruturada de forma incremental ao longo de **7 experimentos estratégicos** para avaliar o impacto da engenharia de atributos (injeção de variáveis físico-químicas contínuas) e de técnicas de balanceamento.
+
+### 1.1 Justificativa Teórica para a Diferenciação de Atributos (RL vs. RF/LightGBM)
+
+Um aspecto fundamental deste desenho experimental é a divergência deliberada entre o conjunto de variáveis preditoras ($X$) utilizado nesta trilha de Regressão Logística e aquele adotado nos experimentos de referência com algoritmos baseados em árvores (Random Forest e LightGBM). Essa separação não constitui uma inconsistência metodológica, mas sim uma exigência estrita decorrente das discrepâncias na arquitetura matemática dos modelos:
+
+1.  **A Barreira da Linearidade (Árvores vs. Hiperplanos):** Modelos como Random Forest e LightGBM segmentam o espaço amostral através de divisões ortogonais consecutivas (repartições em formato de caixas). Essa característica permite-lhes mapear interações não-lineares de altíssima complexidade geométrica a partir de poucas variáveis contextuais e indiretas (como *Temperatura* e *Ortofosfato*). Inversamente, a Regressão Logística projeta um hiperplano rígido (uma linha reta multidimensional) para separar as classes. Como demonstrado nos Experimentos 1 e 2, o algoritmo linear colapsa quando restrito a variáveis indiretas. Para viabilizar a convergência e estabelecer uma comparação justa entre o "melhor cenário linear" e o "melhor cenário baseado em árvores", foi cientificamente necessário injetar os parâmetros físico-químicos estruturais diretamente correlacionados à degradação hídrica (*pH, DBO, Oxigênio Dissolvido e Amônia*) a partir do Experimento 3.
+2.  **A Sensibilidade às Ordens de Grandeza (Cegueira de Escala):** Os modelos de conjunto baseados em árvores avaliam limiares isolados de divisão, tornando-os completamente invariantes à escala dos dados. Para a Regressão Logística, que computa probabilidades com base em distâncias e otimização via gradiente, variáveis com magnitudes numéricas elevadas dominariam artificialmente o cálculo dos coeficientes em detrimento de variáveis cruciais expressas em escalas decimais. Diante disso, foi mandatória a introdução da etapa de padronização (`StandardScaler`) no pipeline de dados da Regressão Logística para todas as variáveis contínuas.
+3.  **A Vulnerabilidade à Multicolinearidade:** Enquanto os ensembles de árvores lidam nativamente com variáveis redundantes sem perda de estabilidade, a Regressão Logística sofre com a multicolinearidade de parâmetros físico-químicos fortemente correlacionados (como o comportamento inversamente proporcional entre *DBO* e *Oxigênio Dissolvido*). Essa vulnerabilidade exigiu que o desenho metodológico incluísse, no Experimento 6, uma etapa focada exclusivamente na otimização de parâmetros de regularização (`C` e penalidades), visando estabilizar numericamente os pesos associados a esses atributos químicos adicionais.
 
 ---
 
@@ -36,7 +44,7 @@ A tabela abaixo sintetiza o desenho experimental adotado para a Regressão Logí
 
 ### Experimento 2: Modelo Reduzido com Pesos Balanceados (4 Variáveis)
 * **Resultados:** Acurácia Global: **0.6440** | F1-Score Ponderado: **0.66** | Classe `Crítica` (Recall): **0.63**
-* **Análise Crítica:** A ativação do parâmetro `class_weight='balanced'` calculou penalidades inversamente proporcionais à frequência das classes. O modelo foi forçado a "enxergar" as minorias, tirando o recall crítico do zero absoluto para 63%. Contudo, operando com poucas variáveis, a precisão desabou para 8%. O modelo passou a gerar uma quantidade massiva de **falsos alarmes**, classificando 670 águas de pureza extrema (`Excelente`) como críticas devido à rigidez da fronteira linear.
+* **Análise Crítica:** A ativação do parâmetro `class_weight='balanced'` calculou penalidades inversamente profissionais à frequência das classes. O modelo foi forçado a "enxergar" as minorias, tirando o recall crítico do zero absoluto para 63%. Contudo, operando com poucas variáveis, a precisão desabou para 8%. O modelo passou a gerar uma quantidade massiva de **falsos alarmes**, classificando 670 águas de pureza extrema (`Excelente`) como críticas devido à rigidez da fronteira linear.
 
 ### Experimento 3: Expansão de Atributos sem Balanceamento (Todas as Variáveis)
 * **Resultados:** Acurácia Global: **0.7813** | Classe `Crítica` (Recall): **0.00**
