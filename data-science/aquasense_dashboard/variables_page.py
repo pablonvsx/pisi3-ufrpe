@@ -1,23 +1,16 @@
-# ============================================================
-#  AquaSense — Exploração das Variáveis Ambientais
-#  variables_page.py 
-# ============================================================
-
 import numpy as np
 from dash import html, dcc, Input, Output
 from dash_iconify import DashIconify
 import plotly.graph_objects as go
 
-# ─────────────────────────────────────────────────────────────
-#  VARIABLE METADATA
-# ─────────────────────────────────────────────────────────────
+
 
 VARIABLES = {
     "Ammonia (mg/l)": {
         "label": "Ammonia",
         "unit": "mg/L",
         "color": "#3fffe7",
-        "skew": 8.21,
+        "skew": 11.132550,
         "mean": 0.847,
         "median": 0.19,
         "std": 3.12,
@@ -43,7 +36,7 @@ VARIABLES = {
         "label": "Demanda Bioquímica de O₂",
         "unit": "mg/L",
         "color": "#00e0ca",
-        "skew": 9.14,
+        "skew": 10.418408,
         "mean": 3.52,
         "median": 1.80,
         "std": 8.74,
@@ -69,7 +62,7 @@ VARIABLES = {
         "label": "Oxigênio Dissolvido",
         "unit": "mg/L",
         "color": "#a8fff5",
-        "skew": -0.82,
+        "skew": -1.466795,
         "mean": 9.85,
         "median": 10.20,
         "std": 2.87,
@@ -95,7 +88,7 @@ VARIABLES = {
         "label": "Temperatura",
         "unit": "°C",
         "color": "#ffd580",
-        "skew": 0.45,
+        "skew": 3.074311,
         "mean": 11.8,
         "median": 11.2,
         "std": 5.94,
@@ -121,7 +114,7 @@ VARIABLES = {
         "label": "pH",
         "unit": "unidades",
         "color": "#80ffe8",
-        "skew": 0.31,
+        "skew": 2.534511,
         "mean": 7.62,
         "median": 7.72,
         "std": 0.71,
@@ -147,7 +140,7 @@ VARIABLES = {
         "label": "Nitrogênio",
         "unit": "mg/L",
         "color": "#3fffe7",
-        "skew": 4.55,
+        "skew": 2.383201,
         "mean": 2.87,
         "median": 1.05,
         "std": 7.22,
@@ -163,7 +156,7 @@ VARIABLES = {
             "registros extremos que chegam a 285 mg/L. Esse padrão reflete a influência de atividades agrícolas "
             "intensivas e lançamento de efluentes nitrogenados. O excesso de nitrogênio favorece a eutrofização, "
             "processo que reduz o oxigênio dissolvido e compromete a biodiversidade aquática. A variação observada "
-            "entre países (especialmente França e Inglaterra) indica diferenças no uso do solo e na intensidade "
+            "entre países (especialmente China e Inglaterra) indica diferenças no uso do solo e na intensidade "
             "das atividades agropecuárias nas bacias hidrográficas monitoradas."
         ),
         "dist_data": [0.1, 0.3, 0.6, 0.9, 1.1, 1.5, 2.0, 3.0, 5.0, 9.0, 18.0, 40.0, 90.0, 180.0],
@@ -173,7 +166,7 @@ VARIABLES = {
         "label": "Nitrato",
         "unit": "mg/L",
         "color": "#00c4ad",
-        "skew": 5.82,
+        "skew": 5.834748,
         "mean": 5.14,
         "median": 1.90,
         "std": 12.4,
@@ -198,7 +191,7 @@ VARIABLES = {
         "label": "Ortofosfato",
         "unit": "mg/L",
         "color": "#3fffe7",
-        "skew": 11.3,
+        "skew": 8.565693,
         "mean": 0.293,
         "median": 0.065,
         "std": 1.54,
@@ -224,7 +217,7 @@ VARIABLES = {
         "label": "CCME Values (Índice de Qualidade)",
         "unit": "índice",
         "color": "#a8fff5",
-        "skew": -1.24,
+        "skew": -1.194706,
         "mean": 85.0,
         "median": 90.6,
         "std": 17.6,
@@ -248,23 +241,23 @@ VARIABLES = {
     },
 }
 
-COUNTRIES = ["Todos os Países", "England", "Ireland", "Canada", "France", "USA"]
+COUNTRIES = ["Todos os Países", "England", "USA", "Ireland", "China", "Canada"]
 
 WATER_BODIES = [
-    "Todos os Tipos", "River", "Lake", "Effluent", "Drainage",
-    "Sewage", "Reservoir", "Stream", "Estuary"
+    "Todos os Tipos", "River", "Effluent", "Lake", "Estuarine", "Bay",
+    "Sea Water", "Canal", "Sewage", "Marine", "Drainage", "Transitional", "Coastal"
 ]
 
 COUNTRY_PROFILES = {
-    "Ammonia (mg/l)":                    {"England": 1.0, "Ireland": 0.85, "Canada": 0.55, "France": 1.2, "USA": 0.72},
-    "Biochemical Oxygen Demand (mg/l)":  {"England": 1.0, "Ireland": 0.78, "Canada": 0.62, "France": 1.15, "USA": 0.88},
-    "Dissolved Oxygen (mg/l)":           {"England": 1.0, "Ireland": 1.05, "Canada": 1.12, "France": 0.95, "USA": 1.02},
-    "Temperature (cel)":                 {"England": 1.0, "Ireland": 0.95, "Canada": 0.78, "France": 1.12, "USA": 1.05},
-    "pH (ph units)":                     {"England": 1.0, "Ireland": 0.98, "Canada": 0.96, "France": 1.02, "USA": 1.01},
-    "Nitrogen (mg/l)":                   {"England": 1.0, "Ireland": 0.82, "Canada": 0.65, "France": 1.22, "USA": 0.95},
-    "Nitrate (mg/l)":                    {"England": 1.0, "Ireland": 0.77, "Canada": 0.58, "France": 1.35, "USA": 0.88},
-    "Orthophosphate (mg/l)":             {"England": 1.0, "Ireland": 0.88, "Canada": 0.60, "France": 1.18, "USA": 0.75},
-    "CCME_Values":                       {"England": 1.0, "Ireland": 1.04, "Canada": 1.08, "France": 0.97, "USA": 0.99},
+    "Ammonia (mg/l)":                    {"England": 1.0, "Ireland": 0.85, "Canada": 0.55, "China": 1.2, "USA": 0.72},
+    "Biochemical Oxygen Demand (mg/l)":  {"England": 1.0, "Ireland": 0.78, "Canada": 0.62, "China": 1.15, "USA": 0.88},
+    "Dissolved Oxygen (mg/l)":           {"England": 1.0, "Ireland": 1.05, "Canada": 1.12, "China": 0.95, "USA": 1.02},
+    "Temperature (cel)":                 {"England": 1.0, "Ireland": 0.95, "Canada": 0.78, "China": 1.12, "USA": 1.05},
+    "pH (ph units)":                     {"England": 1.0, "Ireland": 0.98, "Canada": 0.96, "China": 1.02, "USA": 1.01},
+    "Nitrogen (mg/l)":                   {"England": 1.0, "Ireland": 0.82, "Canada": 0.65, "China": 1.22, "USA": 0.95},
+    "Nitrate (mg/l)":                    {"England": 1.0, "Ireland": 0.77, "Canada": 0.58, "China": 1.35, "USA": 0.88},
+    "Orthophosphate (mg/l)":             {"England": 1.0, "Ireland": 0.88, "Canada": 0.60, "China": 1.18, "USA": 0.75},
+    "CCME_Values":                       {"England": 1.0, "Ireland": 1.04, "Canada": 1.08, "China": 0.97, "USA": 0.99},
 }
 
 WATERBODY_PROFILES = {
@@ -488,7 +481,7 @@ def build_comparison_chart(var_key, compare_by="country", use_log=False, country
         if country and country != "Todos os Países":
             categories = [country]
         else:
-            categories = ["England", "Ireland", "Canada", "France", "USA"]
+            categories = ["England", "Ireland", "Canada", "China", "USA"]
         profiles = COUNTRY_PROFILES.get(var_key, {c: 1.0 for c in categories})
         title = f"{meta['label']} por País"
     else:

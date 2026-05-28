@@ -1,11 +1,3 @@
-/* ============================================================
-   AquaSense — Dropdown Fix Global
-   dropdown-fix.css
-   Coloque na pasta assets/ junto com os outros CSS.
-   Corrige a visibilidade dos dcc.Dropdown em toda a aplicação.
-   ============================================================ */
-
-/* ── Força o fundo escuro em TODOS os dropdowns da app ── */
 
 /* Wrapper geral */
 .Select,
@@ -138,10 +130,10 @@
   cursor: not-allowed !important;
 }
 
-/* ── Opções virtualizadas (Dash usa VirtualizedSelect internamente) ── */
+/* ── Opções virtualizadas  ── */
 .VirtualizedSelectOption {
   background-color: transparent !important;
-  color: rgba(42, 131, 121, 0.8) !important;
+  color: rgba(244, 255, 254, 0.88) !important;
   font-size: 13px !important;
   display: flex !important;
   align-items: center !important;

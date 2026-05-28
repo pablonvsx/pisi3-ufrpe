@@ -563,3 +563,31 @@
   .eda-journey-track  { grid-template-columns: 1fr; }
   .eda-journey-track::before { display: none; }
 }
+/* ============================================================
+   Ajuste final — cards EDA com altura padronizada
+   ============================================================ */
+.eda-nav-grid {
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+
+.eda-nav-card {
+  min-height: 168px;
+  height: 168px;
+  display: flex;
+  flex-direction: column;
+}
+
+.eda-nav-card-title {
+  min-height: 34px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.eda-nav-card-desc {
+  min-height: 38px;
+}
+
+.eda-nav-card-arrow {
+  margin-top: auto;
+}

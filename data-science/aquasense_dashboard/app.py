@@ -8,6 +8,7 @@ from dash_iconify import DashIconify
 import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
+from environmental_monitoring_page import make_environmental_monitoring_page
 
 app = dash.Dash(
     __name__,
@@ -96,8 +97,7 @@ def water_core_svg():
 
 FEATURES = [
     (icon_ml,      "Análise Exploratória",    "Pipeline completo de análise exploratória, engenharia de atributos e validação estatística para extrair padrões ambientais relevantes."),
-    (icon_leaf,    "Machine Learning",        "Modelos preditivos (Random Forest, LightGBM, SVM e Regression Logistic) para classificação da qualidade da água com base em parâmetros físico-químicos."),
-    (icon_chart,   "Dashboards Interativos",  "Visualizações dinâmicas e responsivas com Plotly Dash, permitindo exploração dos dados e resultados dos modelos."),
+    (icon_leaf,    "Machine Learning",        "Modelos supervisionados e clusterização para classificar a qualidade da água e descobrir padrões ambientais ocultos."),
     (icon_science, "Monitoramento Ambiental", "Acompanhamento contínuo de corpos hídricos com integração a dados da CONAMA, garantindo conformidade com as normas de preservação ambiental."),
 ]
 
@@ -145,12 +145,12 @@ EDA_JOURNEY_STEPS = [
 
 EDA_NAV_CARDS = [
     (icon_activity,  "Variáveis Ambientais",     "Distribuições, outliers e análise estatística.", "/eda/variables"),
-    (icon_alert,     "Outliers e Assimetria",     "Detecção de valores extremos.", None),
-    (icon_globe,     "Análise por País",          "Padrões regionais e diferenças geográficas.", None),
-    (icon_droplets,  "Análise por Corpo Hídrico", "Comparação entre ecossistemas aquáticos.", None),
-    (icon_trending,  "Correlações",               "Relações entre parâmetros físico-químicos.", None),
-    (icon_compass,   "CONAMA e Target",           "Enquadramento ambiental e construção do rótulo.", None),
-    (icon_cpu,       "Machine Learning",          "Preparação e modelagem preditiva.", None),
+    (icon_alert,     "Outliers e Assimetria",     "Detecção de valores extremos e assimetria estatística.", "/eda/outliers"),
+    (icon_globe,     "Análise por País",          "Padrões regionais e diferenças geográficas.", "/eda/countries"),
+    (icon_droplets,  "Análise por Corpo Hídrico", "Comparação entre ecossistemas aquáticos.", "/eda/water-bodies"),
+    (icon_trending,  "Correlações",               "Relações entre parâmetros físico-químicos.", "/eda/correlations"),
+    (icon_compass,   "CONAMA e Target",           "Enquadramento ambiental e construção do rótulo.", "/eda/conama-target"),
+    (icon_cpu,       "Machine Learning",          "Modelagem supervisionada e clusterização não supervisionada.", "/machine-learning"),
 ]
 
 
@@ -187,8 +187,8 @@ TEAL_PALETTE = ["#3fffe7", "#00e0ca", "#00c4ad", "#00a893", "#008c7a"]
 
 
 def make_chart_records_by_country():
-    countries = ["Reino Unido", "Irlanda", "Canadá", "França", "Estados Unidos"]
-    values    = [1_190_000, 680_000, 520_000, 280_000, 157_977]
+    countries = ["England", "USA", "Ireland", "China", "Canada"]
+    values    = [2_129_198, 413_814, 235_019, 45_997, 3_949]
     fig = go.Figure(go.Bar(
         x=countries, y=values,
         marker=dict(color=TEAL_PALETTE, line=dict(color="rgba(63,255,231,0.3)", width=1)),
@@ -202,17 +202,17 @@ def make_chart_records_by_country():
 
 
 def make_chart_water_bodies():
-    categories = ["River", "Lake", "Reservoir", "Estuary", "Stream", "Other"]
-    values     = [1_100_000, 620_000, 480_000, 270_000, 210_000, 147_977]
+    categories = ["River", "Effluent", "Lake", "Estuarine", "Bay", "Sea Water", "Canal", "Sewage", "Marine", "Drainage"]
+    values     = [1_852_579, 601_550, 153_603, 49_375, 45_997, 32_061, 28_574, 23_777, 23_162, 10_205]
     fig = go.Figure(go.Bar(
         x=values, y=categories, orientation="h",
-        marker=dict(color=TEAL_PALETTE[::-1] + ["#006960"], line=dict(color="rgba(63,255,231,0.2)", width=1)),
+        marker=dict(color=(TEAL_PALETTE[::-1] + ["#006960", "#00544d", "#004d48", "#003d39", "#002f2c"])[:len(categories)], line=dict(color="rgba(63,255,231,0.2)", width=1)),
         hovertemplate="<b>%{y}</b><br>%{x:,.0f} registros<extra></extra>",
     ))
     fig.update_layout(**CHART_LAYOUT, title=dict(
         text="Corpos Hídricos",
         font=dict(family="Syne, sans-serif", size=13, color="#f4fffe"), x=0, pad=dict(l=0),
-    ), height=260)
+    ), height=320)
     return fig
 
 
@@ -243,25 +243,32 @@ def nav_link(label, href, extra_cls=""):
     return html.Li(html.A(label, href=href, className=f"nav-link {extra_cls}".strip()))
 
 def feature_card(icon_fn, title, text):
+    target = None
+    cta = None
     if title == "Análise Exploratória":
-        return html.A(href="/eda", style={"textDecoration": "none"}, children=[
-            html.Div(className="feature-card", style={"cursor": "pointer"}, children=[
-                html.Div(className="card-icon", children=[icon_fn()]),
-                html.H3(title, className="card-title"),
-                html.P(text, className="card-text"),
-                html.Div(style={"marginTop": "20px", "display": "inline-flex", "alignItems": "center",
-                                "gap": "8px", "fontSize": "13px", "fontWeight": "600",
-                                "color": "var(--teal)", "letterSpacing": "0.3px"}, children=[
-                    "Explorar análise ",
-                    DashIconify(icon="lucide:arrow-right", width=14, height=14, color="#3fffe7"),
-                ]),
-            ]),
-        ])
-    return html.Div(className="feature-card", children=[
+        target = "/eda"
+        cta = "Explorar análise "
+    elif title == "Machine Learning":
+        target = "/machine-learning"
+        cta = "Ver modelagem "
+    elif title == "Monitoramento Ambiental":
+        target = "/environmental-monitoring"
+        cta = "Ver insights "
+
+    card = html.Div(className="feature-card", style={"cursor": "pointer"} if target else {}, children=[
         html.Div(className="card-icon", children=[icon_fn()]),
         html.H3(title, className="card-title"),
         html.P(text, className="card-text"),
+        html.Div(style={"marginTop": "20px", "display": "inline-flex", "alignItems": "center",
+                        "gap": "8px", "fontSize": "13px", "fontWeight": "600",
+                        "color": "var(--teal)", "letterSpacing": "0.3px"}, children=[
+            cta,
+            DashIconify(icon="lucide:arrow-right", width=14, height=14, color="#3fffe7"),
+        ]) if target else None,
     ])
+    if target:
+        return html.A(href=target, style={"textDecoration": "none"}, children=[card])
+    return card
 
 def objetivo_item(num, title, desc):
     return html.Li(className="obj-item", children=[
@@ -541,7 +548,7 @@ def make_eda_metrics():
                 (icon_database,    "2.827.977",   "Registros ambientais",     "Volume total de observações disponíveis para exploração."),
                 (icon_layers,      "14",           "Colunas no dataset",       "Variáveis físico-químicas e contextuais disponíveis."),
                 (icon_calendar,    "1940 – 2023",  "Cobertura temporal",       "Mais de 8 décadas de dados ambientais contínuos."),
-                (icon_map,         "5",            "Países presentes",         "Inglaterra, Irlanda, Canadá, França e Estados Unidos."),
+                (icon_map,         "5",            "Países presentes",         "Inglaterra, Irlanda, Canadá, China e Estados Unidos."),
                 (icon_droplets,    "Múltiplas",    "Tipos de corpos hídricos", "Rios, lagos, reservatórios e outras categorias ambientais."),
                 (icon_target,      "CCME_Values",  "Variável de qualidade",    "Indicador de qualidade hídrica base para análise."),
                 (icon_copy_check,  "0",            "Dados nulos",              "Base de dados completa, sem ausências nas variáveis."),
@@ -658,8 +665,45 @@ from variables_page import (
     VARIABLES, build_histogram, build_boxplot_violin, build_comparison_chart,
     stat_card, interpret_skew, interpret_kurt, interpret_cv
 )
+from outliers_page import (
+    make_outliers_hero, make_outlier_metrics, make_outlier_heatmap_section,
+    make_outlier_ranking_section, make_outlier_interactive_section,
+    make_outlier_context_sections, register_outlier_callbacks
+)
+
+from country_page import (
+    make_country_hero, make_country_metrics, make_country_distribution_section,
+    make_country_temporal_section, make_country_quality_notes, make_country_insight
+)
+
+from waterbody_page import (
+    make_waterbody_hero, make_waterbody_metrics, make_waterbody_distribution_section,
+    make_waterbody_quality_section, make_waterbody_pollution_section, make_waterbody_context_sections
+)
+
+from correlations_page import (
+    make_correlations_hero, make_correlations_metrics, make_correlation_matrix_section,
+    make_relevant_pairs_section, make_scatter_interpretation_section, make_correlation_context_sections, register_correlation_callbacks
+)
+
+from conama_page import (
+    make_conama_hero, make_conama_metrics, make_conama_story_section,
+    make_conama_pipeline_section, make_conama_parameters_section,
+    make_conama_threshold_table_section, make_conama_ifelse_ml_section,
+    make_conama_distribution_section, make_conama_excluded_section,
+    make_conama_ml_impact_section, make_conama_final_note
+)
+
+from ml_page import (
+    make_ml_hero, make_ml_metrics, make_ml_story,
+    make_supervised_section, make_clustering_section,
+    make_ml_final_note, register_ml_callbacks
+)
 
 register_callbacks(app)
+register_outlier_callbacks(app)
+register_correlation_callbacks(app)
+register_ml_callbacks(app)
 
 
 def make_variables_page_full():
@@ -671,6 +715,89 @@ def make_variables_page_full():
         make_stats_row(),
         make_viz_area(),
         make_interpretation_block(),
+        make_footer(),
+    ])
+
+
+def make_outliers_page_full():
+    return html.Div(id="root", className="var-root outlier-root", children=[
+        make_navbar(page="outliers"),
+        make_outliers_hero(),
+        make_outlier_metrics(),
+        make_outlier_heatmap_section(),
+        make_outlier_ranking_section(),
+        make_outlier_interactive_section(),
+        make_outlier_context_sections(),
+        make_footer(),
+    ])
+
+
+def make_country_page_full():
+    return html.Div(id="root", className="var-root country-root", children=[
+        make_navbar(page="country"),
+        make_country_hero(),
+        make_country_metrics(),
+        make_country_distribution_section(),
+        make_country_temporal_section(),
+        make_country_quality_notes(),
+        make_country_insight(),
+        make_footer(),
+    ])
+
+
+def make_waterbody_page_full():
+    return html.Div(id="root", className="var-root waterbody-root", children=[
+        make_navbar(page="waterbody"),
+        make_waterbody_hero(),
+        make_waterbody_metrics(),
+        make_waterbody_distribution_section(),
+        make_waterbody_quality_section(),
+        make_waterbody_pollution_section(),
+        make_waterbody_context_sections(),
+        make_footer(),
+    ])
+
+
+
+def make_conama_page_full():
+    return html.Div(id="root", className="var-root conama-root", children=[
+        make_navbar(page="conama"),
+        make_conama_hero(),
+        make_conama_metrics(),
+        make_conama_story_section(),
+        make_conama_pipeline_section(),
+        make_conama_parameters_section(),
+        make_conama_threshold_table_section(),
+        make_conama_ifelse_ml_section(),
+        make_conama_distribution_section(),
+        make_conama_excluded_section(),
+        make_conama_ml_impact_section(),
+        make_conama_final_note(),
+        make_footer(),
+    ])
+
+def make_correlations_page_full():
+    return html.Div(id="root", className="var-root correlations-root", children=[
+        make_navbar(page="correlations"),
+        make_correlations_hero(),
+        make_correlations_metrics(),
+        make_correlation_matrix_section(),
+        make_relevant_pairs_section(),
+        make_scatter_interpretation_section(),
+        make_correlation_context_sections(),
+        make_footer(),
+    ])
+
+
+def make_ml_page_full():
+    return html.Div(id="root", className="var-root ml-root", children=[
+        make_navbar(page="ml"),
+        make_ml_hero(),
+        make_ml_metrics(),
+        make_ml_story(),
+        make_supervised_section(),
+        make_clustering_section(),
+        make_ml_final_note(),
         make_footer(),
     ])
 
@@ -692,8 +819,23 @@ app.layout = html.Div([
 def render_page(pathname):
     if pathname == "/eda/variables":
         return make_variables_page_full()
+    if pathname == "/eda/outliers":
+        return make_outliers_page_full()
+    if pathname == "/eda/countries":
+        return make_country_page_full()
+    if pathname == "/eda/water-bodies":
+        return make_waterbody_page_full()
+    if pathname == "/eda/correlations":
+        return make_correlations_page_full()
+    if pathname == "/eda/conama-target":
+        return make_conama_page_full()
+    if pathname == "/machine-learning":
+        return make_ml_page_full()
     if pathname == "/eda":
         return make_eda_page()
+    elif pathname == "/environmental-monitoring":
+        return make_environmental_monitoring_page()
+    
     return make_landing_page()
 
 
