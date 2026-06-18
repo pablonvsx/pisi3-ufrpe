@@ -695,8 +695,7 @@ from conama_page import (
 )
 
 from ml_page import (
-    make_ml_hero, make_ml_metrics, make_ml_story,
-    make_supervised_section, make_clustering_section,
+    make_ml_hero, make_ml_layout, make_clustering_section,
     make_ml_final_note, register_ml_callbacks
 )
 
@@ -793,9 +792,7 @@ def make_ml_page_full():
     return html.Div(id="root", className="var-root ml-root", children=[
         make_navbar(page="ml"),
         make_ml_hero(),
-        make_ml_metrics(),
-        make_ml_story(),
-        make_supervised_section(),
+        make_ml_layout(),
         make_clustering_section(),
         make_ml_final_note(),
         make_footer(),
