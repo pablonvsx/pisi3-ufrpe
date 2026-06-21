@@ -2,9 +2,7 @@
   background: #011a18;
 }
 
-/* ============================================================
-   HERO
-   ============================================================ */
+
 .var-hero {
   min-height: 52vh;
   position: relative;
@@ -96,14 +94,15 @@
   opacity: 0.9;
 }
 
-
+/* ============================================================
+   DROPDOWN — ESTILOS BASE (.var-dropdown)
+   ============================================================ */
 
 /* Container */
 .var-dropdown .Select,
 .var-dropdown .Select--single {
   color: var(--white) !important;
 }
-
 
 .var-dropdown .Select-control {
   background: rgba(0, 55, 50, 0.85) !important;
@@ -130,7 +129,6 @@
   border-bottom-right-radius: 0 !important;
 }
 
-
 .var-dropdown .Select-value,
 .var-dropdown .Select-value-label {
   color: var(--white) !important;
@@ -140,20 +138,17 @@
   line-height: 38px !important;
 }
 
-
 .var-dropdown .Select-placeholder {
-  color: rgba(212, 245, 241, 0.45) !important;
+  color: rgba(1, 26, 24, 0.45) !important;
   font-size: 13px !important;
   line-height: 38px !important;
 }
-
 
 .var-dropdown .Select-input input {
   color: var(--white) !important;
   font-family: var(--font-body) !important;
   font-size: 13px !important;
 }
-
 
 .var-dropdown .Select-arrow {
   border-top-color: rgba(63, 255, 231, 0.7) !important;
@@ -166,14 +161,12 @@
   border-top-color: var(--teal) !important;
 }
 
-
 .var-dropdown .Select-clear {
   color: rgba(63, 255, 231, 0.5) !important;
 }
 .var-dropdown .Select-clear:hover {
   color: var(--teal) !important;
 }
-
 
 .var-dropdown .Select-menu-outer {
   background: rgba(1, 30, 28, 0.98) !important;
@@ -189,7 +182,6 @@
   overflow: hidden !important;
 }
 
-
 .var-dropdown .Select-menu {
   background: transparent !important;
   max-height: 240px !important;
@@ -198,7 +190,6 @@
 .var-dropdown .Select-menu::-webkit-scrollbar { width: 4px; }
 .var-dropdown .Select-menu::-webkit-scrollbar-track { background: transparent; }
 .var-dropdown .Select-menu::-webkit-scrollbar-thumb { background: rgba(63,255,231,0.2); border-radius: 4px; }
-
 
 .var-dropdown .Select-option {
   background: transparent !important;
@@ -231,7 +222,6 @@
   background: rgba(63, 255, 231, 0.2) !important;
 }
 
-
 .var-dropdown .VirtualizedSelectOption {
   background: transparent !important;
   color: rgba(212, 245, 241, 0.75) !important;
@@ -246,7 +236,7 @@
   color: var(--teal) !important;
 }
 
-
+/* react-select v2/v3 dentro de .var-dropdown */
 .var-dropdown .Select__control {
   background: rgba(0, 55, 50, 0.85) !important;
   border: 1px solid rgba(63, 255, 231, 0.3) !important;
@@ -267,7 +257,7 @@
 }
 
 .var-dropdown .Select__placeholder {
-  color: rgba(212, 245, 241, 0.45) !important;
+  color: rgba(1, 26, 24, 0.45) !important;
 }
 
 .var-dropdown .Select__menu {
@@ -302,83 +292,203 @@
 }
 
 /* ============================================================
-   DROPDOWN — BUG FIX: valor selecionado invisível
-   Corrige o texto sumindo após seleção em todos os contextos:
-   Dash legacy (react-select v1), react-select v2/v3, Virtualized,
-   e dropdowns fora do escopo .var-dropdown (ex: .dash-dropdown).
+   DROPDOWN — CORREÇÃO GLOBAL DO BUG DE TEXTO INVISÍVEL
+   
+   CAUSA RAIZ: .var-stat-value e .ml-metric-value usam
+   -webkit-text-fill-color: transparent para o efeito de
+   gradiente. Essa propriedade vaza via herança CSS para
+   elementos filhos que não fazem reset explícito — incluindo
+   os dropdowns .ml-dropdown e .ml-sim-dropdown, que vivem
+   fora do escopo .var-dropdown e portanto não eram cobertos
+   pelo fix anterior.
+   
+   SOLUÇÃO: reset universal + re-aplicação forçada da cor
+   para todos os contextos de dropdown do projeto.
    ============================================================ */
 
-/* -- Dash / react-select v1 (legacy) -- */
-.Select-value-label,
-.Select-value,
-.Select-placeholder,
-.Select-control,
-.Select-input input {
-  color: #f4fffe !important;
-  -webkit-text-fill-color: #f4fffe !important;
-  opacity: 1 !important;
-}
-
-.Select--single > .Select-control .Select-value .Select-value-label {
-  color: #f4fffe !important;
-  -webkit-text-fill-color: #f4fffe !important;
-}
-
-.Select.has-value.Select--single > .Select-control .Select-value .Select-value-label {
-  color: #f4fffe !important;
-  -webkit-text-fill-color: #f4fffe !important;
-}
-
-/* -- react-select v2/v3 (Select__ prefix) -- */
-.Select__single-value,
-.Select__placeholder,
-.Select__input-container,
-.Select__input input {
-  color: #f4fffe !important;
-  -webkit-text-fill-color: #f4fffe !important;
-  opacity: 1 !important;
-}
-
-.Select__control {
-  color: #f4fffe !important;
-  -webkit-text-fill-color: #f4fffe !important;
-}
-
-/* -- Dash dcc.Dropdown wrapper -- */
-.dash-dropdown .Select-value-label,
-.dash-dropdown .Select-placeholder,
-.dash-dropdown .Select-input input {
-  color: #f4fffe !important;
-  -webkit-text-fill-color: #f4fffe !important;
-  opacity: 1 !important;
-}
-
-/* -- Neutraliza background-clip: text herdado de .var-stat-value e similares --
-   Esse é o culpado mais comum: -webkit-text-fill-color: transparent vaza
-   para dentro dos filhos do dropdown quando não há reset explícito.        -- */
+/* 1. Reset universal — cancela qualquer herança de
+      -webkit-text-fill-color vinda de elementos pai          */
 .Select *,
 .Select__control *,
-.dash-dropdown * {
-  -webkit-text-fill-color: unset;
-  background-clip: unset;
-  -webkit-background-clip: unset;
+.dash-dropdown *,
+.var-dropdown *,
+.ml-dropdown *,
+.ml-sim-dropdown * {
+  -webkit-text-fill-color: unset !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
 }
 
-/* Re-aplica a cor após o reset universal acima */
+/* 2. Valor selecionado — react-select v1 / Dash legacy       */
 .Select-value-label,
 .Select-value,
 .Select--single > .Select-control .Select-value .Select-value-label,
 .Select.has-value.Select--single > .Select-control .Select-value .Select-value-label,
-.Select__single-value {
-  color: #f4fffe !important;
-  -webkit-text-fill-color: #f4fffe !important;
+.var-dropdown .Select-value-label,
+.var-dropdown .Select-value,
+.ml-dropdown .Select-value-label,
+.ml-dropdown .Select-value,
+.ml-sim-dropdown .Select-value-label,
+.ml-sim-dropdown .Select-value {
+  color: #011a18 !important;
+  -webkit-text-fill-color: #011a18 !important;
+  opacity: 1 !important;
 }
 
-/* -- Virtualized Select -- */
+/* 3. Placeholder                                              */
+.Select-placeholder,
+.var-dropdown .Select-placeholder,
+.ml-dropdown .Select-placeholder,
+.ml-sim-dropdown .Select-placeholder {
+  color: rgba(1, 26, 24, 0.45) !important;
+  -webkit-text-fill-color: rgba(1, 26, 24, 0.45) !important;
+  opacity: 1 !important;
+}
+
+/* 4. Input de busca                                          */
+.Select-input > input,
+.Select-input input,
+.var-dropdown .Select-input > input,
+.ml-dropdown .Select-input > input,
+.ml-sim-dropdown .Select-input > input {
+  color: #011a18 !important;
+  -webkit-text-fill-color: #011a18 !important;
+  background: transparent !important;
+  opacity: 1 !important;
+}
+
+/* 5. react-select v2/v3                                      */
+.Select__single-value,
+.var-dropdown .Select__single-value,
+.ml-dropdown .Select__single-value,
+.ml-sim-dropdown .Select__single-value {
+  color: #011a18 !important;
+  -webkit-text-fill-color: #011a18 !important;
+}
+
+.Select__placeholder,
+.var-dropdown .Select__placeholder,
+.ml-dropdown .Select__placeholder,
+.ml-sim-dropdown .Select__placeholder {
+  color: rgba(1, 26, 24, 0.45) !important;
+  -webkit-text-fill-color: rgba(1, 26, 24, 0.45) !important;
+}
+
+.Select__input-container,
+.Select__input input {
+  color: #011a18 !important;
+  -webkit-text-fill-color: #011a18 !important;
+}
+
+/* 6. Controle visível para .ml-dropdown / .ml-sim-dropdown
+   Atacamos tanto o fundo (forçando escuro) quanto o texto
+   (escuro como fallback caso o fundo branco persista)        */
+
+/* 6a. Forçar fundo escuro no wrapper .dash-dropdown gerado
+       pelo Dash dentro de .ml-dropdown / .ml-sim-dropdown   */
+.ml-dropdown .dash-dropdown .Select-control,
+.ml-dropdown .Select-control,
+.ml-sim-dropdown .dash-dropdown .Select-control,
+.ml-sim-dropdown .Select-control {
+  background-color: rgba(0, 50, 46, 0.95) !important;
+  background: rgba(0, 50, 46, 0.95) !important;
+  border: 1px solid rgba(63, 255, 231, 0.4) !important;
+  border-radius: 10px !important;
+  min-height: 40px !important;
+  color: #011a18 !important;
+  -webkit-text-fill-color: #011a18 !important;
+}
+
+/* 6b. Se o fundo branco vencer de qualquer forma, garante
+       texto escuro legível (preto sobre branco)             */
+.ml-dropdown .Select-value-label,
+.ml-dropdown .Select-value,
+.ml-sim-dropdown .Select-value-label,
+.ml-sim-dropdown .Select-value,
+.ml-dropdown .Select--single > .Select-control .Select-value .Select-value-label,
+.ml-sim-dropdown .Select--single > .Select-control .Select-value .Select-value-label {
+  color: #011a18 !important;
+  -webkit-text-fill-color: #011a18 !important;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* 6c. Placeholder legível em qualquer fundo                 */
+.ml-dropdown .Select-placeholder,
+.ml-sim-dropdown .Select-placeholder {
+  color: rgba(212, 245, 241, 0.6) !important;
+  -webkit-text-fill-color: rgba(212, 245, 241, 0.6) !important;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* 6d. Input de busca                                        */
+.ml-dropdown .Select-input > input,
+.ml-dropdown .Select-input input,
+.ml-sim-dropdown .Select-input > input,
+.ml-sim-dropdown .Select-input input {
+  color: #011a18 !important;
+  -webkit-text-fill-color: #011a18 !important;
+  background: transparent !important;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* 7. Menu aberto para .ml-dropdown / .ml-sim-dropdown        */
+.ml-dropdown .Select-menu-outer,
+.ml-sim-dropdown .Select-menu-outer {
+  background-color: #011e1b !important;
+  background: #011e1b !important;
+  border: 1px solid rgba(63, 255, 231, 0.3) !important;
+  border-radius: 0 0 10px 10px !important;
+  z-index: 9999 !important;
+}
+
+/* 8. Opções do menu                                          */
+.ml-dropdown .Select-option,
+.ml-sim-dropdown .Select-option {
+  color: rgba(212, 245, 241, 0.85) !important;
+  -webkit-text-fill-color: rgba(212, 245, 241, 0.85) !important;
+  background-color: transparent !important;
+}
+
+.ml-dropdown .Select-option.is-focused,
+.ml-sim-dropdown .Select-option.is-focused {
+  background-color: rgba(63, 255, 231, 0.1) !important;
+  color: #3fffe7 !important;
+  -webkit-text-fill-color: #3fffe7 !important;
+}
+
+.ml-dropdown .Select-option.is-selected,
+.ml-sim-dropdown .Select-option.is-selected {
+  background-color: rgba(63, 255, 231, 0.15) !important;
+  color: #3fffe7 !important;
+  -webkit-text-fill-color: #3fffe7 !important;
+  font-weight: 600 !important;
+}
+
+/* 9. Seta                                                    */
+.ml-dropdown .Select-arrow,
+.ml-sim-dropdown .Select-arrow {
+  border-top-color: rgba(63, 255, 231, 0.7) !important;
+}
+
+.ml-dropdown .Select.is-open .Select-arrow,
+.ml-sim-dropdown .Select.is-open .Select-arrow {
+  border-bottom-color: rgba(63, 255, 231, 0.7) !important;
+  border-top-color: transparent !important;
+}
+
+/* 10. Garantia extra via .dash-dropdown                       */
+.dash-dropdown .Select-value,
+.dash-dropdown .Select-value-label {
+  color: #011a18 !important;
+  -webkit-text-fill-color: #011a18 !important;
+  opacity: 1 !important;
+}
+
+/* 11. Virtualized Select                                      */
 .VirtualizedSelectOption,
 .VirtualizedSelectFocusedOption {
-  color: #f4fffe !important;
-  -webkit-text-fill-color: #f4fffe !important;
+  color: #011a18 !important;
+  -webkit-text-fill-color: #011a18 !important;
 }
 
 /* ============================================================
@@ -429,7 +539,9 @@
   color: var(--teal) !important;
 }
 
-
+/* ============================================================
+   STATS ROW
+   ============================================================ */
 .var-stats-row {
   padding: 32px 40px;
   background: linear-gradient(180deg, #011a18 0%, #012220 100%);
@@ -490,6 +602,10 @@
   margin: 0 auto 12px;
 }
 
+/* NOTA: esta classe usa -webkit-text-fill-color: transparent
+   intencionalmente para o efeito de gradiente nos números.
+   O reset de dropdown acima (seção "CORREÇÃO GLOBAL") garante
+   que esse valor não vaze para dentro dos dropdowns.          */
 .var-stat-value {
   font-family: var(--font-head);
   font-size: 22px;
@@ -519,7 +635,9 @@
   line-height: 1.5;
 }
 
-
+/* ============================================================
+   VIZ AREA
+   ============================================================ */
 .var-viz-area {
   padding: 40px 40px 0;
   max-width: 1200px;
@@ -591,7 +709,9 @@
   color: var(--muted);
 }
 
-
+/* ============================================================
+   DESC TABLE
+   ============================================================ */
 .var-desc-table-wrap {
   padding: 4px 0;
 }
@@ -687,7 +807,9 @@
   line-height: 1.5;
 }
 
-
+/* ============================================================
+   BOXPLOT LEGEND
+   ============================================================ */
 .var-boxplot-explainer {
   height: 100%;
 }
@@ -737,7 +859,9 @@
   color: var(--muted);
 }
 
-
+/* ============================================================
+   INTERPRET SECTION
+   ============================================================ */
 .var-interpret-section {
   padding: 20px 40px 60px;
   max-width: 1200px;
@@ -833,7 +957,9 @@
   font-family: var(--font-head);
 }
 
-
+/* ============================================================
+   EDA NAV CARDS
+   ============================================================ */
 .eda-nav-card-active {
   opacity: 1 !important;
   cursor: pointer;
@@ -905,6 +1031,7 @@
   .var-filter-bar-inner { flex-direction: column; gap: 14px; }
   .var-filter-group { min-width: 100%; }
 }
+
 /* ============================================================
    CONAMA + TARGET PAGE
    ============================================================ */
@@ -1255,6 +1382,8 @@
   display: flex; align-items: center; justify-content: center;
   background: var(--teal-soft); border: 1px solid var(--border); margin-bottom: 16px;
 }
+/* NOTA: mesma técnica de gradiente de .var-stat-value.
+   O reset de dropdown (seção acima) protege os filhos.       */
 .ml-metric-value {
   font-family: var(--font-head); font-size: 26px; font-weight: 800;
   background: linear-gradient(135deg, var(--teal), var(--white));
@@ -1316,7 +1445,6 @@
 /* ============================================================
    LANDING — PADRONIZAÇÃO DOS CARDS
    ============================================================ */
-
 .eda-nav-grid {
   align-items: stretch !important;
 }
@@ -1324,10 +1452,8 @@
 .eda-nav-card {
   min-height: 340px !important;
   height: 340px !important;
-
   display: flex !important;
   flex-direction: column !important;
-
   justify-content: flex-start !important;
 }
 
@@ -1342,7 +1468,6 @@
 /* ============================================================
    LANDING — CARDS DE FUNCIONALIDADES PADRONIZADOS
    ============================================================ */
-
 #features .cards-grid {
   align-items: stretch !important;
 }
@@ -1357,11 +1482,9 @@
   height: 330px !important;
   min-height: 330px !important;
   max-height: 330px !important;
-
   display: flex !important;
   flex-direction: column !important;
   justify-content: flex-start !important;
-
   padding: 36px 34px !important;
 }
 
@@ -1378,11 +1501,10 @@
 #features .feature-card > div:last-child {
   margin-top: auto !important;
 }
+
 /* ============================================================
    ML PAGE — NEW SECTIONS (final research version)
    ============================================================ */
-
-/* Hero — add ghost button style if not exists */
 .btn-ghost {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 13px 26px; border-radius: 99px; font-size: 14px; font-weight: 700;
@@ -1483,7 +1605,7 @@
   margin: 0;
 }
 .ml-evo-connector {
-  display: none; /* decorative, handled by ::before on parent */
+  display: none;
 }
 
 /* ---- Final Model Config Grid ---- */
@@ -1689,7 +1811,7 @@
   border-radius: 12px;
 }
 
-/* ---- Responsive ---- */
+/* ---- Responsive ML ---- */
 @media (max-width: 900px) {
   .ml-evo-timeline { grid-template-columns: repeat(2, 1fr); }
   .ml-final-config-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1700,4 +1822,12 @@
   .ml-evo-timeline, .ml-final-config-grid { grid-template-columns: 1fr; }
   .ml-sim-inputs { grid-template-columns: 1fr; }
   .ml-simulator-card { padding: 24px 18px; }
+}
+
+/* Correção definitiva — classe real gerada pelo Dash */
+.dash-dropdown-trigger,
+.dash-dropdown-grid-container,
+span.dash-dropdown-trigger {
+  color: #0c6150 !important;
+  -webkit-text-fill-color: #0c6150 !important;
 }

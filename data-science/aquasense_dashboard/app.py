@@ -791,10 +791,7 @@ def make_correlations_page_full():
 def make_ml_page_full():
     return html.Div(id="root", className="var-root ml-root", children=[
         make_navbar(page="ml"),
-        make_ml_hero(),
         make_ml_layout(),
-        make_clustering_section(),
-        make_ml_final_note(),
         make_footer(),
     ])
 
